@@ -41,9 +41,17 @@ assert.ok(!combined.includes("OPENAI_API_KEY="), "Secrets should not be rendered
 assert.ok(!combined.includes("AWS_SECRET_ACCESS_KEY="), "Secrets should not be rendered");
 assert.ok(!css.includes("letter-spacing: -"), "Negative letter spacing is disallowed");
 assert.ok(
-  css.includes('font-family: Helvetica, "Helvetica Neue", "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;'),
-  "Body font should prefer Helvetica"
+  css.includes('@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");'),
+  "Pretendard webfont should be imported"
 );
+
+const fontFamilies = css.match(/font-family:[^;]+;/g) || [];
+assert.ok(fontFamilies.length > 0, "CSS should declare font families");
+fontFamilies.forEach((fontFamily) => {
+  assert.ok(fontFamily.includes("Pretendard"), `Font family should prefer Pretendard: ${fontFamily}`);
+});
+assert.ok(!css.includes("Helvetica"), "Helvetica should not remain in the font stack");
+assert.ok(!css.includes("Consolas"), "Consolas should not remain in the font stack");
 
 [
   "--discord-blurple: #5865f2",

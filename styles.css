@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
 :root {
   color-scheme: dark;
   --discord-blurple: #5865f2;
@@ -35,7 +37,7 @@ body {
     linear-gradient(180deg, rgba(10, 13, 58, 0), rgba(0, 0, 0, 0.38) 62%),
     var(--bg);
   color: var(--text);
-  font-family: Helvetica, "Helvetica Neue", "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+  font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
   letter-spacing: 0;
 }
 
@@ -328,7 +330,7 @@ code {
   display: block;
   width: 100%;
   color: #d8e9ef;
-  font-family: Consolas, "Courier New", monospace;
+  font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
   font-size: 12px;
   line-height: 1.5;
   overflow-wrap: anywhere;
