@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SuperUltimate AI 운영본부</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="page-hero">
+      <div class="hero-inner">
+        <p class="eyebrow">MRT 데이터 / 마케팅 자동화 운영 지도</p>
+        <h1>SuperUltimate AI 운영본부</h1>
+        <p class="hero-copy">
+          지금까지 구축한 데이터 적재, 광고비 수집, Telegram 봇, A/B 테스트,
+          LLM 분석, 운영 모니터링을 한 화면에서 볼 수 있게 정리했습니다.
+        </p>
+        <div id="stats" class="stats-grid" aria-label="핵심 운영 지표"></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section-block">
+        <div class="section-heading">
+          <p class="section-kicker">SYSTEM MAP</p>
+          <h2>개발된 운영 시스템</h2>
+        </div>
+        <div id="systems" class="system-grid"></div>
+      </section>
+
+      <section class="section-block section-split">
+        <div>
+          <div class="section-heading">
+            <p class="section-kicker">APIs</p>
+            <h2>사용 중인 API / 연동</h2>
+          </div>
+          <div id="apis" class="api-grid"></div>
+        </div>
+        <div>
+          <div class="section-heading">
+            <p class="section-kicker">BOTS</p>
+            <h2>상시 실행 프로세스</h2>
+          </div>
+          <div id="liveBots" class="bot-stack"></div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <div class="section-heading">
+          <p class="section-kicker">AUTOMATION</p>
+          <h2>Windows 예약 자동화 파이프라인</h2>
+        </div>
+        <div id="automationTimeline" class="timeline"></div>
+      </section>
+
+      <section class="section-block section-split section-split-wide">
+        <div>
+          <div class="section-heading">
+            <p class="section-kicker">GUARDRAILS</p>
+            <h2>보안 / 운영 안전장치</h2>
+          </div>
+          <div id="guardrails" class="compact-list"></div>
+        </div>
+        <div>
+          <div class="section-heading">
+            <p class="section-kicker">TESTS</p>
+            <h2>테스트 / 검증 근거</h2>
+          </div>
+          <div id="tests" class="compact-list"></div>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <div class="section-heading">
+          <p class="section-kicker">EVIDENCE</p>
+          <h2>분석 기준 파일</h2>
+        </div>
+        <div id="evidence" class="evidence-grid"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
