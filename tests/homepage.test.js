@@ -87,6 +87,12 @@ assert.ok(
   /@media \(max-width: 760px\)\s*\{[\s\S]*?h1\s*\{[^}]*font-size:\s*34px/.test(css),
   "Mobile hero h1 should use a fixed 34px size"
 );
+const mobileAgentRules = css.match(/@media \(max-width: 760px\)\s*\{([\s\S]*?)\n\}/)?.[1] || "";
+assert.ok(
+  /\.agent-grid\s*\{[^}]*padding-left:\s*\d+px/.test(mobileAgentRules) &&
+    /\.agent-grid::before\s*\{[^}]*left:\s*\d+px[^}]*right:\s*auto[^}]*width:\s*1px/.test(mobileAgentRules),
+  "Mobile agent connector should use a left rail outside card content"
+);
 assert.ok(
   css.includes('@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");'),
   "Pretendard webfont should be imported"

@@ -221,7 +221,8 @@ code { display: block; width: 100%; color: var(--text); font-family: "Pretendard
   .section-split,
   .section-split-wide,
   .evidence-grid { grid-template-columns: 1fr; }
-  .agent-grid::before { right: 50%; left: 50%; width: 1px; height: calc(100% - 20px); }
+  .agent-grid { padding-left: 18px; }
+  .agent-grid::before { left: 8px; right: auto; width: 1px; height: calc(100% - 20px); }
   .stat-card, .update-card, .system-card { min-height: 0; }
   .api-row, .timeline-item { grid-template-columns: 1fr; }
   .timeline-time { min-height: 48px; border-right: 0; border-bottom: 1px solid var(--line); }
