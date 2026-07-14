@@ -66,94 +66,67 @@ const developmentUpdates = [
   },
 ];
 
-const flowStages = [
-  "DATA SOURCE",
-  "COLLECT / SCHEDULE",
-  "DUCKDB / MAPPING",
-  "MART / SAFE VIEW",
-  "BOT / AGENT",
-  "DELIVERY",
+const commonInputs = [
+  ["Redash query 317", "주문번호, 주문금액, 매출과 결합 키인 order_key", "DuckDB"],
+  ["Airbridge S3 · app / web", "유입 채널, 앱·웹 행동 이벤트와 Transaction ID", "DuckDB"],
+  ["Airbridge Actuals Cost API", "채널부터 검색어 단위까지 광고비와 구매·매출", "DuckDB"],
+  ["Google Ads · Apple Search Ads", "매체별 비용, 노출, 클릭 데이터", "DuckDB"],
+  ["7개 광고 관리 API", "캠페인·광고그룹·소재·키워드의 이름·상태·예산·일정·입찰", "DuckDB 운영 이력"],
+  ["Google Sheets · A/B 등록표", "실험 기간, 대상 캠페인과 variant 매핑", "Agent 실행 + Wiki 학습"],
+  ["Telegram · 사람의 업데이트", "제품·마케팅 소식, 분석 질문, 채널 변경과 Wiki 원문", "Agent 요청 + Wiki"],
 ];
 
-const flowLanes = [
+const collectionSteps = [
+  ["Windows Task Scheduler", "06:00부터 10:00까지 적재·분석·점검 작업 실행"],
+  ["Telegram Bot Intake", "질문, A/B 명령, Wiki 업데이트 요청 접수"],
+  ["자동 기록 Agent", "A/B 결과와 채널 운영 변경을 구조화해 기록"],
+];
+
+const cores = [
   {
-    title: "주문 · 이벤트",
-    status: "운영 중",
-    tone: "running",
-    cells: [
-      ["Redash query 317", "Airbridge S3 app/web"],
-      ["06:00 Redash Rolling Loader", "06:10 Airbridge Daily Loader", "06:45 Joined Mart"],
-      ["raw_redash_orders", "raw_airbridge_events", "Transaction ID ↔ order_key"],
-      ["mart_airbridge_redash_joined", "chat_orders · chat_airbridge_events", "chat_joined"],
-      ["Data Chat Bot", "A/B Daily Agent"],
-      ["Telegram 분석 답변", "Google Sheets A/B 지표", "Company Marketing Wiki 이벤트"],
+    name: "DuckDB 데이터 코어",
+    role: "STRUCTURED TRUTH",
+    groups: [
+      ["주문·이벤트", ["raw_redash_orders", "raw_airbridge_events"]],
+      ["광고비", ["raw_airbridge_report_costs", "raw_google_ads_costs", "raw_apple_search_ads_costs"]],
+      ["운영 이력", ["marketing_operation_snapshots", "marketing_operation_changes"]],
+      ["마트·실행 상태", ["mart_airbridge_redash_joined", "load_runs"]],
+      ["핵심 매핑", ["Transaction ID ↔ order_key"]],
+      ["분석 안전 계층", ["12개 임시 chat_* safe view"]],
     ],
   },
   {
-    title: "광고 성과",
-    status: "운영 중",
-    tone: "running",
-    cells: [
-      ["Airbridge Actuals", "Google Ads", "Apple Search Ads", "Kakao Moment Display"],
-      ["06:20 Daily Cost Loader", "Google · Apple cost loaders", "Kakao 08:10 script · 작업 미등록"],
-      ["raw_airbridge_report_costs", "raw_google_ads_costs", "raw_apple_search_ads_costs", "raw_kakao_moment_costs · 테이블 미생성"],
-      ["channel · campaign · ad group", "creative · term safe views", "12개 임시 safe view"],
-      ["Data Chat Bot", "Daily Report Bot", "A/B Daily Agent"],
-      ["ROAS · CPP · CPI 답변", "Telegram 데일리 리포트", "Google Sheets"],
+    name: "Wiki 지식 코어",
+    role: "CONTEXT TRUTH",
+    groups: [
+      ["Company Marketing Wiki", ["마케팅 사실·지표 정의", "캠페인 의사결정·운영 보고", "A/B 학습·채널 변경·제품 업데이트"]],
+      ["Market Intelligence Wiki", ["시장·경쟁사·규제·채널 변화", "전략 리서치와 외부 근거"]],
+      ["Personal LLM Wiki", ["프로젝트 구조·데이터 자산", "자동화 운영 지식과 seed 문서"]],
+      ["문서 분리", ["Raw source note", "Interpreted page"]],
+      ["지식 안전장치", ["고객 raw 값·토큰·자격증명 제외", "허용 문서만 Data Chat에 제공"]],
     ],
   },
-  {
-    title: "A/B 실험",
-    status: "운영 중",
-    tone: "running",
-    cells: [
-      ["Google Sheets 실험 등록표", "Telegram A/B 명령", "joined mart · cost tables"],
-      ["Automation Telegram Bot", "08:30 A/B Daily Pipeline"],
-      ["mart_airbridge_redash_joined 조회", "캠페인 · ad group · variant mapping resolver"],
-      ["03_daily_metrics", "04_daily_summary", "05_final_result", "LLM 요약 · 종료 판단"],
-      ["A/B Daily Agent", "Automation Telegram Bot"],
-      ["Google Sheets 갱신", "Telegram 결과", "Company Marketing Wiki 이벤트"],
-    ],
-  },
-  {
-    title: "채널 운영 변경",
-    status: "점검 필요",
-    tone: "check",
-    cells: [
-      ["Naver SearchAd · Google Ads", "Apple · Meta · Moloco", "Naver DA · Kakao"],
-      ["09:20 Channel Operation Connectors", "2026-07-14 최근 결과 비정상"],
-      ["marketing_operation_snapshots", "캠페인 · 광고그룹 · 소재 · 키워드 정규화"],
-      ["created · removed · status", "budget · name · schedule · bid diff", "marketing_operation_changes"],
-      ["Channel Operation Agent"],
-      ["Telegram 변경 알림", "Company Marketing Wiki changelog"],
-    ],
-  },
-  {
-    title: "지식 · 위키 컨텍스트",
-    status: "구축 완료",
-    tone: "built",
-    cells: [
-      ["Telegram /update · /wiki_update", "제품 · 마케팅 업데이트"],
-      ["Wiki Update Bot", "비밀정보 검사 → 미리보기 → 확인", "현재 미실행 · 작업 미등록"],
-      ["DuckDB 직접 적재 없음", "raw source note 보존", "수치 진실은 DuckDB 유지"],
-      ["Company Marketing Wiki", "Market Intelligence Wiki", "허용된 위키 컨텍스트"],
-      ["Wiki Update Bot", "Data Chat Bot"],
-      ["위키 원문 · 해석 문서", "문맥이 보강된 Telegram 답변"],
-    ],
-  },
-  {
-    title: "모니터링 · 데일리 리포트",
-    status: "운영 중",
-    tone: "running",
-    cells: [
-      ["Windows Task Scheduler", "load 상태 · 테이블 freshness", "Airbridge raw · media cost"],
-      ["예약 loader 실행", "09:00 Delay Check", "10:00 Final Check", "09:00 Daily Report"],
-      ["load_runs", "9개 현재 테이블 상태", "raw source · cost cache"],
-      ["freshness · load status", "daily_metrics · report_pack", "gpt_prompt · telegram_summary"],
-      ["Load Monitor Agent", "Daily Report Bot"],
-      ["Telegram 지연 · 누락 경고", "Telegram 데일리 리포트"],
-    ],
-  },
+];
+
+const fusionRules = [
+  ["숫자를 물으면", "DuckDB SQL 결과를 수치 기준으로 사용합니다."],
+  ["이유와 배경을 물으면", "허용된 Wiki 문맥으로 해석을 보강합니다."],
+  ["통합 답변을 만들 때", "OpenAI Responses API가 숫자와 문맥을 구분해 결합합니다."],
+  ["수치 충돌 시 DuckDB 우선", "Wiki는 설명 근거로만 사용합니다."],
+];
+
+const agents = [
+  { name: "Data Chat Bot", uses: ["DuckDB READ", "Wiki READ"], input: ["12개 safe view", "허용된 Company Wiki 문맥"], output: ["Telegram 분석 답변"] },
+  { name: "A/B Daily Agent", uses: ["DuckDB READ", "Wiki WRITE"], input: ["joined mart", "Google Sheets 실험 매핑"], output: ["Sheets·Telegram 결과", "Company Wiki 학습"] },
+  { name: "Channel Operation Agent", uses: ["DuckDB WRITE", "Wiki WRITE"], input: ["7개 관리 API", "이전 snapshot"], output: ["snapshots·changes", "Wiki changelog·Telegram"] },
+  { name: "Wiki Update Bot", uses: ["Wiki WRITE"], input: ["Telegram 업데이트 원문", "비밀정보 검사·미리보기"], output: ["raw source note", "Company·Market 해석 문서"] },
+  { name: "Monitor + Report", uses: ["DuckDB READ", "Wiki OPTIONAL"], input: ["load_runs", "table freshness"], output: ["Telegram 경고·데일리 리포트"] },
+];
+
+const wikiWrites = [
+  ["A/B Daily Agent → Company Wiki", "실험 이벤트와 재사용 가능한 학습을 기록합니다."],
+  ["Channel Operation Agent → Company Wiki", "채널 운영 변경과 변경 시점을 기록합니다."],
+  ["Wiki Update Bot → Company / Market Wiki", "검사·미리보기·확인 후 원문과 해석 문서를 기록합니다."],
 ];
 
 const systems = [
@@ -486,29 +459,93 @@ function renderDevelopmentUpdates() {
 
 function renderFlow() {
   const target = document.querySelector("#endToEndFlow");
-  flowLanes.forEach((flow) => {
-    const lane = makeEl("article", `flow-lane lane-${flow.tone}`);
-    const head = makeEl("div", "flow-lane-head");
-    head.append(makeEl("h3", "", flow.title));
-    head.append(makeStatus(flow.status, flow.tone));
-    lane.append(head);
+  target.append(renderCommonFlow());
+  target.append(renderAgentFlow());
+  target.append(renderWikiWrites());
+}
 
-    const cells = makeEl("div", "flow-cells");
-    flow.cells.forEach((items, index) => {
-      const cell = makeEl("section", `flow-cell flow-stage-${index + 1}`);
-      cell.append(makeEl("span", "flow-stage-label", flowStages[index]));
-
-      const list = makeEl("ul", "flow-item-list");
-      items.forEach((item) => {
-        const warning = item.includes("미등록") || item.includes("미생성") || item.includes("비정상");
-        list.append(makeEl("li", warning ? "flow-warning" : "", item));
-      });
-      cell.append(list);
-      cells.append(cell);
-    });
-    lane.append(cells);
-    target.append(lane);
+function renderCommonFlow() {
+  const flow = makeEl("section", "common-flow");
+  flow.append(makeEl("h3", "flow-step", "Step 01 · 데이터는 어디서 들어오나"));
+  const inputs = makeEl("div", "input-grid");
+  commonInputs.forEach(([name, detail, destination]) => {
+    const item = makeEl("article", "input-card");
+    item.append(makeEl("h4", "", name));
+    item.append(makeEl("p", "", detail));
+    item.append(makeEl("span", "flow-destination", destination));
+    inputs.append(item);
   });
+  flow.append(inputs);
+
+  flow.append(makeEl("h3", "flow-step", "Step 02 · 어떻게 모으고 기록하나"));
+  const collection = makeEl("div", "collection-grid");
+  collectionSteps.forEach(([name, detail]) => {
+    const item = makeEl("article", "collection-card");
+    item.append(makeEl("h4", "", name));
+    item.append(makeEl("p", "", detail));
+    collection.append(item);
+  });
+  flow.append(collection);
+
+  const dualCore = makeEl("div", "dual-core");
+  cores.forEach((core) => {
+    const card = makeEl("article", "core-card");
+    card.append(makeEl("p", "core-role", core.role));
+    card.append(makeEl("h3", "", core.name));
+    core.groups.forEach(([name, items]) => {
+      const group = makeEl("section", "core-group");
+      group.append(makeEl("h4", "", name));
+      const list = makeEl("ul", "core-list");
+      items.forEach((item) => list.append(makeEl("li", "", item)));
+      group.append(list);
+      card.append(group);
+    });
+    dualCore.append(card);
+  });
+  flow.append(dualCore);
+
+  flow.append(makeEl("h3", "flow-step", "Step 04 · 두 코어를 결합하는 규칙"));
+  const rules = makeEl("div", "fusion-rules");
+  fusionRules.forEach(([question, answer]) => {
+    const rule = makeEl("article", "fusion-rule");
+    rule.append(makeEl("strong", "", question));
+    rule.append(makeEl("p", "", answer));
+    rules.append(rule);
+  });
+  flow.append(rules);
+  return flow;
+}
+
+function renderAgentFlow() {
+  const section = makeEl("section", "agent-flow");
+  section.append(makeEl("h3", "flow-step", "Step 05 · 에이전트 실행"));
+  const grid = makeEl("div", "agent-grid");
+  agents.forEach((agent) => {
+    const card = makeEl("article", "agent-card");
+    card.append(makeEl("h4", "", agent.name));
+    const uses = makeEl("div", "core-use-chips");
+    agent.uses.forEach((use) => uses.append(makeEl("span", "core-use-chip", use)));
+    card.append(uses);
+    card.append(makeEl("p", "agent-input", `입력: ${agent.input.join(" · ")}`));
+    card.append(makeEl("p", "agent-output", `출력: ${agent.output.join(" · ")}`));
+    grid.append(card);
+  });
+  section.append(grid);
+  return section;
+}
+
+function renderWikiWrites() {
+  const section = makeEl("section", "wiki-write-flow");
+  section.append(makeEl("h3", "flow-step", "Step 06 · Wiki 기록 경로"));
+  const grid = makeEl("div", "wiki-write-grid");
+  wikiWrites.forEach(([name, detail]) => {
+    const item = makeEl("article", "wiki-write-card");
+    item.append(makeEl("h4", "", name));
+    item.append(makeEl("p", "", detail));
+    grid.append(item);
+  });
+  section.append(grid);
+  return section;
 }
 
 function renderSystems() {

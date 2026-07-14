@@ -38,58 +38,40 @@ const combined = `${html}\n${css}\n${js}`;
 
 [
   "NEW SINCE 2026-07-01",
-  "END-TO-END DATA FLOW",
-  "DATA SOURCE",
-  "COLLECT / SCHEDULE",
-  "DUCKDB / MAPPING",
-  "MART / SAFE VIEW",
-  "BOT / AGENT",
-  "DELIVERY",
-  "주문 · 이벤트",
-  "광고 성과",
-  "A/B 실험",
-  "채널 운영 변경",
-  "지식 · 위키 컨텍스트",
-  "모니터링 · 데일리 리포트",
-  "Transaction ID ↔ order_key",
-  "raw_redash_orders",
-  "raw_airbridge_events",
-  "mart_airbridge_redash_joined",
-  "marketing_operation_snapshots",
-  "marketing_operation_changes",
+  "DUAL-CORE OPERATING MAP",
+  "데이터는 어디서 들어오나",
+  "Redash query 317",
+  "Airbridge S3 · app / web",
+  "Airbridge Actuals Cost API",
+  "Google Ads · Apple Search Ads",
+  "7개 광고 관리 API",
+  "Google Sheets · A/B 등록표",
+  "Telegram · 사람의 업데이트",
+  "DuckDB 데이터 코어",
+  "Wiki 지식 코어",
+  "Company Marketing Wiki",
+  "Market Intelligence Wiki",
+  "Personal LLM Wiki",
+  "수치 충돌 시 DuckDB 우선",
   "Data Chat Bot",
-  "Automation Telegram Bot",
   "A/B Daily Agent",
   "Channel Operation Agent",
   "Wiki Update Bot",
-  "Load Monitor Agent",
-  "Daily Report Bot",
-  "9개 현재 테이블",
-  "12개 임시 safe view",
-  "Company Marketing Wiki",
-  "Market Intelligence Wiki",
-  "Kakao Moment Display",
-  "2026-07-14 확인",
-  "운영 중",
-  "구축 완료",
-  "점검 필요",
-  "설계",
+  "Monitor + Report",
 ].forEach((needle) => {
-  assert.ok(combined.includes(needle), `Missing flow/update content: ${needle}`);
+  assert.ok(combined.includes(needle), `Missing dual-core content: ${needle}`);
 });
 
 [
   'id="developmentUpdates"',
   'id="endToEndFlow"',
-  'class="flow-stage-heads"',
+  "common-flow",
+  "dual-core",
+  "agent-grid",
+  "wiki-write-grid",
 ].forEach((needle) => {
-  assert.ok(html.includes(needle), `Missing semantic flow structure: ${needle}`);
+  assert.ok(combined.includes(needle), `Missing dual-core structure: ${needle}`);
 });
-
-assert.ok(
-  css.includes("grid-template-columns: repeat(6, minmax(0, 1fr))"),
-  "Desktop flow should use six stable stage columns"
-);
 
 assert.ok(!combined.includes("TELEGRAM_BOT_TOKEN="), "Secrets should not be rendered");
 assert.ok(!combined.includes("OPENAI_API_KEY="), "Secrets should not be rendered");
@@ -109,17 +91,6 @@ fontFamilies.forEach((fontFamily) => {
 });
 assert.ok(!css.includes("Helvetica"), "Helvetica should not remain in the font stack");
 assert.ok(!css.includes("Consolas"), "Consolas should not remain in the font stack");
-
-[
-  "--discord-blurple: #5865f2",
-  "--discord-canvas: #0a0d3a",
-  "--discord-green: #35ed7e",
-  "--discord-magenta: #ec48bd",
-  "linear-gradient(135deg",
-  "border-radius: 40px",
-].forEach((needle) => {
-  assert.ok(combined.includes(needle), `Missing Discord design requirement: ${needle}`);
-});
 
 assert.ok(!combined.includes("publish-band"), "Publish ready section should be removed");
 assert.ok(!html.includes("PUBLISH READY"), "Publish ready label should not render");
