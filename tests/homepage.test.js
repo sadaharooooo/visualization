@@ -80,6 +80,14 @@ assert.ok(!combined.includes("C:\\Users\\"), "Local user paths should not be pub
 assert.ok(!css.includes("calc(100vw - 36px)"), "Padded page layout should not use scrollbar-inclusive viewport width");
 assert.ok(!css.includes("letter-spacing: -"), "Negative letter spacing is disallowed");
 assert.ok(
+  /(^|\n)h1\s*\{[^}]*max-width:\s*100%[^}]*overflow-wrap:\s*anywhere/.test(css),
+  "Hero h1 should contain and wrap within its parent"
+);
+assert.ok(
+  /@media \(max-width: 760px\)\s*\{[\s\S]*?h1\s*\{[^}]*font-size:\s*34px/.test(css),
+  "Mobile hero h1 should use a fixed 34px size"
+);
+assert.ok(
   css.includes('@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");'),
   "Pretendard webfont should be imported"
 );

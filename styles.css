@@ -30,7 +30,7 @@ body {
 main { width: min(1380px, calc(100% - 36px)); margin: 0 auto; }
 
 h1, h2, h3, h4, p { margin-top: 0; }
-h1 { margin-bottom: 12px; font-size: 48px; font-weight: 800; line-height: 1.12; }
+h1 { max-width: 100%; margin-bottom: 12px; font-size: 48px; font-weight: 800; line-height: 1.12; overflow-wrap: anywhere; }
 h2 { font-weight: 700; }
 h3, h4 { font-weight: 700; overflow-wrap: anywhere; }
 
@@ -209,7 +209,7 @@ code { display: block; width: 100%; color: var(--text); font-family: "Pretendard
 @media (max-width: 760px) {
   .page-hero { padding: 26px 0 18px; }
   .hero-inner, main { width: min(100% - 24px, 1380px); }
-  h1 { font-size: 36px; }
+  h1 { font-size: 34px; }
   .hero-copy { font-size: 16px; }
   .section-heading-row { align-items: flex-start; flex-direction: column; }
   .stats-grid,
