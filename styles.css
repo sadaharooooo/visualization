@@ -137,7 +137,7 @@ main { padding: 24px 0 52px; }
 .agent-card h4,
 .wiki-write-card h4 { margin-bottom: 10px; font-size: 14px; }
 .core-use-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
-.core-use-chip { padding: 3px 5px; border: 1px solid var(--line); border-radius: 3px; color: var(--yellow); background: var(--elevated); font-size: 10px; font-weight: 700; overflow-wrap: anywhere; }
+.core-use-chip { padding: 3px 5px; border: 1px solid var(--line); border-radius: 4px; color: var(--yellow); background: var(--elevated); font-size: 10px; font-weight: 700; overflow-wrap: anywhere; }
 .agent-input,
 .agent-output,
 .wiki-write-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }

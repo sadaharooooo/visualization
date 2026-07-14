@@ -109,6 +109,7 @@ assert.ok(!css.includes("Consolas"), "Consolas should not remain in the font sta
 assert.ok(!css.includes("--discord-"), "Discord tokens should be removed");
 assert.ok(!css.includes("linear-gradient"), "Gradients should be removed");
 assert.ok(!css.includes("border-radius: 40px"), "Oversized radii should be removed");
+assert.ok(/\.core-use-chip\s*\{[^}]*border-radius:\s*[4-8]px/.test(css), "Core use chips should use an approved 4px-8px radius");
 
 assert.ok(!combined.includes("publish-band"), "Publish ready section should be removed");
 assert.ok(!html.includes("PUBLISH READY"), "Publish ready label should not render");
