@@ -116,11 +116,56 @@ const fusionRules = [
 ];
 
 const agents = [
-  { name: "Data Chat Bot", uses: ["DuckDB READ", "Wiki READ"], input: ["12개 safe view", "허용된 Company Wiki 문맥"], output: ["Telegram 분석 답변"] },
-  { name: "A/B Daily Agent", uses: ["DuckDB READ", "Wiki WRITE"], input: ["joined mart", "Google Sheets 실험 매핑"], output: ["Sheets·Telegram 결과", "Company Wiki 학습"] },
-  { name: "Channel Operation Agent", uses: ["DuckDB WRITE", "Wiki WRITE"], input: ["7개 관리 API", "이전 snapshot"], output: ["snapshots·changes", "Wiki changelog·Telegram"] },
-  { name: "Wiki Update Bot", uses: ["Wiki WRITE"], input: ["Telegram 업데이트 원문", "비밀정보 검사·미리보기"], output: ["raw source note", "Company·Market 해석 문서"] },
-  { name: "Monitor + Report", uses: ["DuckDB READ", "Wiki OPTIONAL"], input: ["load_runs", "table freshness"], output: ["Telegram 경고·데일리 리포트"] },
+  {
+    name: "Data Chat Bot",
+    uses: ["DuckDB READ", "Wiki READ"],
+    input: ["12개 safe view", "허용된 Company Wiki 문맥"],
+    action: "안전 SQL 조회 → Wiki 문맥 결합 → 답변 생성",
+    output: ["Telegram 분석 답변"],
+    status: "운영 중",
+    tone: "running",
+    observed: "2026-07-14 확인",
+  },
+  {
+    name: "A/B Daily Agent",
+    uses: ["DuckDB READ", "Wiki WRITE"],
+    input: ["joined mart", "Google Sheets 실험 매핑"],
+    action: "일별 지표 집계 → 요약·종료 판단 → 학습 기록",
+    output: ["Sheets·Telegram 결과", "Company Wiki 학습"],
+    status: "운영 중",
+    tone: "running",
+    observed: "2026-07-14 확인",
+  },
+  {
+    name: "Channel Operation Agent",
+    uses: ["DuckDB WRITE", "Wiki WRITE"],
+    input: ["7개 관리 API", "이전 snapshot"],
+    action: "현재 상태 snapshot → 이전 상태 diff → 변경 기록",
+    output: ["snapshots·changes", "Wiki changelog·Telegram"],
+    status: "점검 필요",
+    tone: "check",
+    observed: "2026-07-14 확인",
+  },
+  {
+    name: "Wiki Update Bot",
+    uses: ["Wiki WRITE"],
+    input: ["Telegram 업데이트 원문", "비밀정보 검사·미리보기"],
+    action: "비밀정보 검사 → 미리보기 → 사용자 확인 후 기록",
+    output: ["raw source note", "Company·Market 해석 문서"],
+    status: "구축 완료 · 미실행",
+    tone: "built",
+    observed: "2026-07-14 확인",
+  },
+  {
+    name: "Monitor + Report",
+    uses: ["DuckDB READ", "Wiki OPTIONAL"],
+    input: ["load_runs", "table freshness"],
+    action: "적재 상태·freshness 확인 → 지연·실패 판정 → 보고",
+    output: ["Telegram 경고·데일리 리포트"],
+    status: "운영 중",
+    tone: "running",
+    observed: "2026-07-14 확인",
+  },
 ];
 
 const wikiWrites = [
@@ -526,7 +571,12 @@ function renderAgentFlow() {
     const uses = makeEl("div", "core-use-chips");
     agent.uses.forEach((use) => uses.append(makeEl("span", "core-use-chip", use)));
     card.append(uses);
+    const status = makeEl("div", "agent-status-row");
+    status.append(makeStatus(agent.status, agent.tone));
+    status.append(makeEl("small", "agent-observed", agent.observed));
+    card.append(status);
     card.append(makeEl("p", "agent-input", `입력: ${agent.input.join(" · ")}`));
+    card.append(makeEl("p", "agent-action", `작업: ${agent.action}`));
     card.append(makeEl("p", "agent-output", `출력: ${agent.output.join(" · ")}`));
     grid.append(card);
   });

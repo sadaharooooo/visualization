@@ -142,9 +142,13 @@ main { padding: 24px 0 52px; }
 .wiki-write-card h4 { margin-bottom: 10px; font-size: 14px; }
 .core-use-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
 .core-use-chip { padding: 3px 5px; border: 1px solid var(--line); border-radius: 4px; color: var(--yellow); background: var(--elevated); font-size: 10px; font-weight: 700; overflow-wrap: anywhere; }
+.agent-status-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.agent-observed { color: var(--muted); font-size: 10px; font-weight: 700; }
 .agent-input,
+.agent-action,
 .agent-output,
 .wiki-write-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+.agent-action,
 .agent-output { margin-top: 8px; }
 .wiki-write-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .wiki-write-card { padding: 14px; border-color: var(--yellow); }
@@ -194,7 +198,7 @@ code { display: block; width: 100%; color: var(--text); font-family: "Pretendard
 .evidence-item { padding: 16px; }
 .evidence-item strong { display: block; margin-bottom: 8px; color: var(--text); }
 
-@media (max-width: 1180px) {
+@media (max-width: 1328px) {
   .common-flow { grid-template-columns: 1fr; gap: 10px; }
   .common-flow > .flow-step:nth-child(n),
   .common-flow > .input-grid,

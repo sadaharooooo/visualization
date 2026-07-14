@@ -13,6 +13,7 @@ const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const css = fs.readFileSync(path.join(root, "styles.css"), "utf8");
 const js = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const combined = `${html}\n${css}\n${js}`;
+const agentBlock = js.match(/const agents = \[([\s\S]*?)\n\];/)?.[1] || "";
 
 [
   "SuperUltimate AI 운영본부",
@@ -60,6 +61,49 @@ const combined = `${html}\n${css}\n${js}`;
   "Monitor + Report",
 ].forEach((needle) => {
   assert.ok(combined.includes(needle), `Missing dual-core content: ${needle}`);
+});
+
+[
+  ["Redash query 317", "DuckDB"],
+  ["Airbridge S3 · app / web", "DuckDB"],
+  ["Airbridge Actuals Cost API", "DuckDB"],
+  ["Google Ads · Apple Search Ads", "DuckDB"],
+  ["7개 광고 관리 API", "DuckDB 운영 이력"],
+  ["Google Sheets · A/B 등록표", "Agent 실행 + Wiki 학습"],
+  ["Telegram · 사람의 업데이트", "Agent 요청 + Wiki"],
+].forEach(([source, destination]) => {
+  assert.ok(js.includes(`\"${source}\"`) && js.includes(`\"${destination}\"`), `Missing Step 01 route: ${source} -> ${destination}`);
+});
+
+[
+  "raw_redash_orders",
+  "raw_airbridge_events",
+  "raw_airbridge_report_costs",
+  "raw_google_ads_costs",
+  "raw_apple_search_ads_costs",
+  "marketing_operation_snapshots",
+  "marketing_operation_changes",
+  "mart_airbridge_redash_joined",
+  "load_runs",
+  "Transaction ID ↔ order_key",
+  "12개 임시 chat_* safe view",
+].forEach((needle) => {
+  assert.ok(js.includes(needle), `Missing DuckDB core detail: ${needle}`);
+});
+
+assert.strictEqual((agentBlock.match(/\baction:/g) || []).length, 5, "Every agent should define an action");
+assert.strictEqual((agentBlock.match(/\bstatus:/g) || []).length, 5, "Every agent should define a status");
+assert.strictEqual((agentBlock.match(/\btone:/g) || []).length, 5, "Every agent should define a status tone");
+assert.strictEqual((agentBlock.match(/\bobserved:/g) || []).length, 5, "Every agent status should include its observation date");
+assert.ok(agentBlock.includes('status: "운영 중"'), "Operating agents should be explicit");
+assert.ok(agentBlock.includes('status: "점검 필요"'), "Channel Operation inspection status should be explicit");
+assert.ok(agentBlock.includes('status: "구축 완료 · 미실행"'), "Wiki Update Bot non-running status should be explicit");
+assert.ok(js.includes('makeEl("p", "agent-action", `작업: ${agent.action}`)'), "Agent action should render on each card");
+assert.ok(js.includes("makeStatus(agent.status, agent.tone)"), "Agent status should render on each card");
+assert.ok(js.includes('makeEl("small", "agent-observed", agent.observed)'), "Agent observation date should render on each card");
+
+["운영 중", "구축 완료", "점검 필요", "설계"].forEach((status) => {
+  assert.ok(combined.includes(status), `Missing explicit operating status: ${status}`);
 });
 
 [
@@ -121,7 +165,8 @@ assert.ok(
   "Desktop flow content should start in row 2"
 );
 
-const tabletFlow = css.match(/@media \(max-width: 1180px\) \{([\s\S]*?)\n\}/)?.[1] || "";
+const tabletFlow = css.match(/@media \(max-width: 1328px\) \{([\s\S]*?)\n\}/)?.[1] || "";
+assert.ok(tabletFlow, "Common flow should stack before its 1292px minimum width overflows the page");
 ["flow-step:nth-child(n)", "input-grid", "collection-grid", "dual-core", "fusion-rules"].forEach((item) => {
   assert.ok(tabletFlow.includes(`.common-flow > .${item}`), `${item} should remain in the tablet flow reset`);
 });
