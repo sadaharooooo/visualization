@@ -92,6 +92,24 @@ fontFamilies.forEach((fontFamily) => {
 assert.ok(!css.includes("Helvetica"), "Helvetica should not remain in the font stack");
 assert.ok(!css.includes("Consolas"), "Consolas should not remain in the font stack");
 
+[
+  "--canvas: #0b0e11",
+  "--surface: #1e2329",
+  "--elevated: #2b3139",
+  "--yellow: #fcd535",
+  "--active-yellow: #f0b90b",
+  "--text: #eaecef",
+  "--muted: #929aa5",
+  "--up: #0ecb81",
+  "--down: #f6465d",
+].forEach((needle) => {
+  assert.ok(css.includes(needle), `Missing Binance token: ${needle}`);
+});
+
+assert.ok(!css.includes("--discord-"), "Discord tokens should be removed");
+assert.ok(!css.includes("linear-gradient"), "Gradients should be removed");
+assert.ok(!css.includes("border-radius: 40px"), "Oversized radii should be removed");
+
 assert.ok(!combined.includes("publish-band"), "Publish ready section should be removed");
 assert.ok(!html.includes("PUBLISH READY"), "Publish ready label should not render");
 assert.ok(
