@@ -20,6 +20,45 @@
     </header>
 
     <main>
+      <section class="section-block" aria-labelledby="updates-title">
+        <div class="section-heading section-heading-row">
+          <div>
+            <p class="section-kicker">NEW SINCE 2026-07-01</p>
+            <h2 id="updates-title">최근 개발 업데이트</h2>
+          </div>
+          <span class="observed-badge">2026-07-14 확인</span>
+        </div>
+        <div id="developmentUpdates" class="update-grid"></div>
+      </section>
+
+      <section class="section-block flow-section" aria-labelledby="flow-title">
+        <div class="section-heading section-heading-row">
+          <div>
+            <p class="section-kicker">END-TO-END DATA FLOW</p>
+            <h2 id="flow-title">데이터가 봇과 에이전트를 움직이는 전체 흐름</h2>
+          </div>
+          <span class="observed-badge">9개 현재 테이블 · 12개 임시 safe view · 2026-07-14 확인</span>
+        </div>
+
+        <div class="orchestration-strip" aria-label="자동화 실행 계층">
+          <strong>실행 계층</strong>
+          <span>Windows Task Scheduler</span>
+          <span>시작프로그램 봇</span>
+          <span>OpenAI Responses API</span>
+          <span>Telegram Bot API</span>
+        </div>
+
+        <div class="flow-stage-heads" aria-hidden="true">
+          <span>DATA SOURCE</span>
+          <span>COLLECT / SCHEDULE</span>
+          <span>DUCKDB / MAPPING</span>
+          <span>MART / SAFE VIEW</span>
+          <span>BOT / AGENT</span>
+          <span>DELIVERY</span>
+        </div>
+        <div id="endToEndFlow" class="flow-lanes"></div>
+      </section>
+
       <section class="section-block">
         <div class="section-heading">
           <p class="section-kicker">SYSTEM MAP</p>

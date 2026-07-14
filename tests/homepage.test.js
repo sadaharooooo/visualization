@@ -36,9 +36,66 @@ const combined = `${html}\n${css}\n${js}`;
   assert.ok(combined.includes(needle), `Missing required text: ${needle}`);
 });
 
+[
+  "NEW SINCE 2026-07-01",
+  "END-TO-END DATA FLOW",
+  "DATA SOURCE",
+  "COLLECT / SCHEDULE",
+  "DUCKDB / MAPPING",
+  "MART / SAFE VIEW",
+  "BOT / AGENT",
+  "DELIVERY",
+  "주문 · 이벤트",
+  "광고 성과",
+  "A/B 실험",
+  "채널 운영 변경",
+  "지식 · 위키 컨텍스트",
+  "모니터링 · 데일리 리포트",
+  "Transaction ID ↔ order_key",
+  "raw_redash_orders",
+  "raw_airbridge_events",
+  "mart_airbridge_redash_joined",
+  "marketing_operation_snapshots",
+  "marketing_operation_changes",
+  "Data Chat Bot",
+  "Automation Telegram Bot",
+  "A/B Daily Agent",
+  "Channel Operation Agent",
+  "Wiki Update Bot",
+  "Load Monitor Agent",
+  "Daily Report Bot",
+  "9개 현재 테이블",
+  "12개 임시 safe view",
+  "Company Marketing Wiki",
+  "Market Intelligence Wiki",
+  "Kakao Moment Display",
+  "2026-07-14 확인",
+  "운영 중",
+  "구축 완료",
+  "점검 필요",
+  "설계",
+].forEach((needle) => {
+  assert.ok(combined.includes(needle), `Missing flow/update content: ${needle}`);
+});
+
+[
+  'id="developmentUpdates"',
+  'id="endToEndFlow"',
+  'class="flow-stage-heads"',
+].forEach((needle) => {
+  assert.ok(html.includes(needle), `Missing semantic flow structure: ${needle}`);
+});
+
+assert.ok(
+  css.includes("grid-template-columns: repeat(6, minmax(0, 1fr))"),
+  "Desktop flow should use six stable stage columns"
+);
+
 assert.ok(!combined.includes("TELEGRAM_BOT_TOKEN="), "Secrets should not be rendered");
 assert.ok(!combined.includes("OPENAI_API_KEY="), "Secrets should not be rendered");
 assert.ok(!combined.includes("AWS_SECRET_ACCESS_KEY="), "Secrets should not be rendered");
+assert.ok(!combined.includes("C:\\Users\\"), "Local user paths should not be published");
+assert.ok(!css.includes("calc(100vw - 36px)"), "Padded page layout should not use scrollbar-inclusive viewport width");
 assert.ok(!css.includes("letter-spacing: -"), "Negative letter spacing is disallowed");
 assert.ok(
   css.includes('@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");'),

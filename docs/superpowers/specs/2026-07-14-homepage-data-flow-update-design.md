@@ -94,34 +94,46 @@ Status: `설계` and must not be presented as implemented.
 
 ## End-To-End Flowchart
 
-The chart is one component with four stage columns and four horizontal lanes. This avoids crossing connectors and remains readable on mobile.
+The chart is one component with six stage columns and six horizontal lanes. Every lane names the source, scheduled collector, DuckDB destination or mapping, derived layer, acting bot or agent, and final delivery channel. This makes the relationship between stored data and automation the primary story.
 
 ### Stage Columns
 
-1. `SOURCE`: external APIs, files, Google Sheets, and Telegram input
-2. `RAW / HISTORY`: DuckDB source tables, run history, and operation snapshots
-3. `MART / SAFE`: joined mart, grain-specific temporary safe views, diffs, and experiment calculations
-4. `OUTPUT`: Telegram, A/B Sheets, reports, wikis, and monitoring
+1. `DATA SOURCE`: external APIs, files, Google Sheets, and Telegram input
+2. `COLLECT / SCHEDULE`: loaders, connectors, bot intake, and Windows Task Scheduler times
+3. `DUCKDB / MAPPING`: exact base tables and the keys or rules used to connect them
+4. `MART / SAFE VIEW`: joined mart, temporary safe views, diffs, and experiment calculations
+5. `BOT / AGENT`: the named process that reads the data and decides or acts
+6. `DELIVERY`: Telegram, Google Sheets, reports, wikis, and monitoring alerts
 
 ### Lane 1: Orders and Events
 
-`Redash query 317 + Airbridge S3 app/web` → `raw_redash_orders + raw_airbridge_events + load_runs` → `mart_airbridge_redash_joined + chat_orders + chat_airbridge_events + chat_joined` → `Data Chatbot + attributed analysis + load monitoring`.
+`Redash query 317 + Airbridge S3 app/web` → `06:00 Redash rolling loader + 06:10 Airbridge loader` → `raw_redash_orders + raw_airbridge_events`, joined with normalized `Transaction ID ↔ order_key` → `mart_airbridge_redash_joined + chat_orders + chat_airbridge_events + chat_joined` → `Data Chat Bot + A/B Daily Agent` → `Telegram answers + A/B Sheets + wiki events`.
 
 ### Lane 2: Paid Media Performance
 
-`Airbridge Actuals + Apple Search Ads + Google Ads + Kakao Moment` → `raw_airbridge_report_costs + raw_apple_search_ads_costs + raw_google_ads_costs + raw_kakao_moment_costs` → grain-specific cost safe views → `ROAS/CPP/CPI reports + Telegram + chatbot`.
+`Airbridge Actuals + Apple Search Ads + Google Ads + Kakao Moment` → `06:20 cost loader + Kakao loader code` → `raw_airbridge_report_costs + raw_apple_search_ads_costs + raw_google_ads_costs + planned raw_kakao_moment_costs` → grain-specific cost safe views → `Data Chat Bot + Daily Report Bot + A/B Daily Agent` → `ROAS/CPP/CPI answers + Telegram reports + A/B Sheets`.
 
 `raw_kakao_moment_costs` must be visually marked `구축 완료` with `작업 미등록 · 테이블 미생성`, not operating.
 
-### Lane 3: Channel Operations
+### Lane 3: A/B Experiments
 
-`Paid-media management APIs` → `marketing_operation_snapshots` → `operation diff + marketing_operation_changes` → `Telegram changelog + Company Marketing Wiki`.
+`Google Sheets experiment register + Telegram A/B commands` → `Automation Telegram Bot + 08:30 daily pipeline` → `joined mart + cost tables + mapping resolver` → `daily metrics + LLM daily summary/final result` → `A/B Daily Agent` → `Google Sheets + Telegram + Company Marketing Wiki events`.
+
+### Lane 4: Channel Operations
+
+`Naver SearchAd + Google Ads + Apple Search Ads + Meta + Moloco + Naver DA + Kakao management APIs` → `09:20 channel operation connectors` → `marketing_operation_snapshots` → `normalized object diff + marketing_operation_changes` → `Channel Operation Agent` → `Telegram changelog + Company Marketing Wiki`.
 
 The output is marked `점검 필요` using the 2026-07-14 observation.
 
-### Lane 4: Experiments and Knowledge
+### Lane 5: Knowledge Context
 
-`Google Sheets register + Telegram wiki intake + DuckDB marts` → `A/B daily metrics + raw wiki notes` → `LLM summary/final result + allowlisted wiki context` → `Google Sheets + Telegram + Company Marketing Wiki + Data Chatbot interpretation`.
+`Telegram wiki intake + product/marketing update` → `Wiki Update Bot preview and confirmation` → `no direct DuckDB write; raw source notes are preserved` → `interpreted Company Marketing Wiki pages + allowlisted context` → `Wiki Update Bot + Data Chat Bot` → `Company Marketing Wiki + contextual Telegram answers`.
+
+DuckDB remains the numeric source of truth. Wiki context is interpretation only.
+
+### Lane 6: Monitoring and Daily Reporting
+
+`Windows Task Scheduler + load status + table freshness` → `scheduled loaders and monitor checks` → `load_runs + current table state` → `freshness/load status + daily_metrics/report_pack` → `Load Monitor Agent + Daily Report Bot` → `09:00/10:00 Telegram alerts + daily Telegram report`.
 
 ## Current Database Summary
 
@@ -165,9 +177,9 @@ No Mermaid runtime, chart library, framework, build step, or new dependency is a
 
 ## Responsive Behavior
 
-- Desktop: four stage columns per lane with directional connectors.
-- Tablet: two columns per row while preserving stage order.
-- Mobile: each lane becomes a vertical `SOURCE → RAW → MART/SAFE → OUTPUT` sequence.
+- Desktop: six stage columns per lane with directional connectors.
+- Tablet: three columns per row while preserving stage order.
+- Mobile: each lane becomes a vertical `DATA SOURCE → COLLECT → DUCKDB → MART/SAFE → BOT/AGENT → DELIVERY` sequence.
 - Nodes must use stable grid sizing and wrap long table or job names.
 - The chart must not require horizontal scrolling.
 
@@ -184,7 +196,8 @@ No Mermaid runtime, chart library, framework, build step, or new dependency is a
 `tests/homepage.test.js` will add checks for:
 
 - The `NEW SINCE 2026-07-01` section and every material update above
-- Four flowchart stages and four lanes
+- Six flowchart stages and six lanes
+- Exact `Transaction ID ↔ order_key` mapping and named bot/agent consumers
 - Required DuckDB table names and twelve safe-view capability count
 - Status labels `운영 중`, `구축 완료`, `점검 필요`, and `설계`
 - Kakao marked as not yet registered instead of operating

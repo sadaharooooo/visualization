@@ -42,12 +42,12 @@ body {
 }
 
 .page-hero {
-  padding: 40px 24px 28px;
+  padding: 40px 0 28px;
 }
 
 .hero-inner,
 main {
-  width: min(1180px, calc(100vw - 36px));
+  width: min(1180px, calc(100% - 36px));
   margin: 0 auto;
 }
 
@@ -139,6 +139,231 @@ main {
   font-size: 30px;
   font-weight: 900;
   line-height: 1.25;
+}
+
+.section-heading-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.observed-badge {
+  flex: 0 1 auto;
+  max-width: 100%;
+  padding: 7px 10px;
+  border: 1px solid rgba(53, 237, 126, 0.44);
+  border-radius: 6px;
+  color: var(--discord-green);
+  background: rgba(53, 237, 126, 0.08);
+  font-size: 12px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.update-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.update-card {
+  position: relative;
+  min-width: 0;
+  min-height: 194px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(30, 35, 83, 0.88);
+  overflow: hidden;
+}
+
+.update-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--update-accent);
+}
+
+.update-running { --update-accent: var(--green); }
+.update-built { --update-accent: var(--blue); }
+.update-check { --update-accent: var(--amber); }
+.update-design { --update-accent: var(--pink); }
+
+.update-meta,
+.flow-lane-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.update-meta time {
+  color: var(--subtle);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.update-card h3 {
+  margin: 20px 0 8px;
+  font-size: 18px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.update-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.flow-section {
+  margin-top: 34px;
+}
+
+.orchestration-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-block: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(88, 101, 242, 0.12);
+}
+
+.orchestration-strip strong {
+  margin-right: 4px;
+  color: var(--discord-green);
+  font-size: 12px;
+}
+
+.orchestration-strip span {
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.flow-stage-heads,
+.flow-cells {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.flow-stage-heads {
+  padding: 10px 0;
+}
+
+.flow-stage-heads span {
+  min-width: 0;
+  color: var(--discord-green);
+  font-size: 11px;
+  font-weight: 900;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.flow-lanes {
+  display: grid;
+  gap: 14px;
+}
+
+.flow-lane {
+  min-width: 0;
+  padding: 16px 0 20px;
+  border-top: 1px solid var(--line);
+}
+
+.flow-lane:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.flow-lane-head {
+  margin-bottom: 12px;
+}
+
+.flow-lane-head h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.flow-cell {
+  position: relative;
+  min-width: 0;
+  min-height: 174px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(21, 25, 74, 0.84);
+}
+
+.flow-cell::after {
+  content: "→";
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: -20px;
+  color: var(--discord-green);
+  font-size: 18px;
+  font-weight: 900;
+  transform: translateY(-50%);
+}
+
+.flow-cell:last-child::after {
+  content: none;
+}
+
+.flow-stage-1 { border-top: 4px solid var(--blue); }
+.flow-stage-2 { border-top: 4px solid var(--violet); }
+.flow-stage-3 { border-top: 4px solid var(--amber); background: rgba(71, 57, 69, 0.86); }
+.flow-stage-4 { border-top: 4px solid var(--green); }
+.flow-stage-5 { border-top: 4px solid var(--pink); background: rgba(79, 34, 91, 0.82); }
+.flow-stage-6 { border-top: 4px solid var(--teal); }
+
+.flow-stage-label {
+  display: none;
+  margin-bottom: 10px;
+  color: var(--discord-green);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.flow-item-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flow-item-list li {
+  position: relative;
+  padding-left: 11px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.42;
+  overflow-wrap: anywhere;
+}
+
+.flow-item-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.58em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--discord-green);
+}
+
+.flow-item-list .flow-warning {
+  color: var(--amber);
 }
 
 .system-grid {
@@ -318,13 +543,23 @@ main {
 }
 
 .status-pill {
-  padding: 6px 10px;
-  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border-radius: 6px;
   color: #000000;
   background: var(--discord-green);
   font-size: 12px;
   font-weight: 900;
+  white-space: nowrap;
 }
+
+.status-pill.status-running { background: var(--discord-green); }
+.status-pill.status-built { background: var(--discord-link); }
+.status-pill.status-check { background: var(--amber); }
+.status-pill.status-design { color: var(--text); background: var(--discord-magenta); }
 
 code {
   display: block;
@@ -452,11 +687,36 @@ code {
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .update-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .flow-stage-heads {
+    display: none;
+  }
+
+  .flow-cells {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 28px;
+  }
+
+  .flow-stage-label {
+    display: block;
+  }
+
+  .flow-cell:nth-child(3)::after {
+    content: "↓";
+    top: auto;
+    right: 50%;
+    bottom: -25px;
+    transform: translateX(50%);
+  }
 }
 
 @media (max-width: 620px) {
   .page-hero {
-    padding: 26px 18px 20px;
+    padding: 26px 0 20px;
   }
 
   .hero-inner,
@@ -466,6 +726,37 @@ code {
 
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  .section-heading-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .update-grid,
+  .flow-cells {
+    grid-template-columns: 1fr;
+  }
+
+  .update-card {
+    min-height: 0;
+  }
+
+  .flow-cell {
+    min-height: 0;
+  }
+
+  .flow-cell::after,
+  .flow-cell:nth-child(3)::after {
+    content: "↓";
+    top: auto;
+    right: 50%;
+    bottom: -25px;
+    transform: translateX(50%);
+  }
+
+  .flow-cell:last-child::after {
+    content: none;
   }
 
   h1 {
