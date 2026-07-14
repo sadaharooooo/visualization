@@ -92,6 +92,27 @@ fontFamilies.forEach((fontFamily) => {
 assert.ok(!css.includes("Helvetica"), "Helvetica should not remain in the font stack");
 assert.ok(!css.includes("Consolas"), "Consolas should not remain in the font stack");
 
+assert.ok(/\.common-flow\s*\{[^}]*align-items:\s*start/.test(css), "Desktop common flow should align items to the start");
+[1, 3, 6].forEach((step) => {
+  assert.ok(
+    new RegExp(`\\.common-flow > \\.flow-step:nth-child\\(${step}\\)\\s*\\{[^}]*grid-row:\\s*1`).test(css),
+    `Flow step ${step} should stay in desktop row 1`
+  );
+});
+["input-grid", "collection-grid", "dual-core", "fusion-rules"].forEach((item) => {
+  assert.ok(css.includes(`.common-flow > .${item}`), `${item} should be explicitly placed in the desktop flow`);
+});
+assert.ok(
+  /\.common-flow > \.input-grid,[\s\S]*\.common-flow > \.fusion-rules\s*\{[^}]*grid-row:\s*2[^}]*align-self:\s*start/.test(css),
+  "Desktop flow content should start in row 2"
+);
+
+const tabletFlow = css.match(/@media \(max-width: 1180px\) \{([\s\S]*?)\n\}/)?.[1] || "";
+["flow-step:nth-child(n)", "input-grid", "collection-grid", "dual-core", "fusion-rules"].forEach((item) => {
+  assert.ok(tabletFlow.includes(`.common-flow > .${item}`), `${item} should remain in the tablet flow reset`);
+});
+assert.ok(/\.common-flow > \.flow-step:nth-child\(n\),[\s\S]*\.common-flow > \.fusion-rules\s*\{[^}]*grid-row:\s*auto/.test(tabletFlow), "Tablet flow should reset to automatic rows");
+
 [
   "--canvas: #0b0e11",
   "--surface: #1e2329",

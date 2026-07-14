@@ -88,16 +88,20 @@ main { padding: 24px 0 52px; }
 .common-flow {
   display: grid;
   grid-template-columns: minmax(260px, 1.3fr) 24px minmax(210px, .8fr) 24px minmax(520px, 2.55fr) 24px minmax(230px, 1fr);
-  align-items: stretch;
+  align-items: start;
 }
 .flow-step { min-width: 0; margin: 0; padding: 0 8px; color: var(--yellow); font-size: 13px; line-height: 1.35; }
-.common-flow > .flow-step:nth-child(1) { grid-column: 1 / 3; }
+.common-flow > .flow-step:nth-child(1) { grid-column: 1 / 3; grid-row: 1; }
 .common-flow > .input-grid { grid-column: 1; }
-.common-flow > .flow-step:nth-child(3) { grid-column: 3 / 5; }
+.common-flow > .flow-step:nth-child(3) { grid-column: 3 / 5; grid-row: 1; }
 .common-flow > .collection-grid { grid-column: 3; }
 .common-flow > .dual-core { grid-column: 5; }
-.common-flow > .flow-step:nth-child(6) { grid-column: 6 / 8; }
+.common-flow > .flow-step:nth-child(6) { grid-column: 6 / 8; grid-row: 1; }
 .common-flow > .fusion-rules { grid-column: 7; }
+.common-flow > .input-grid,
+.common-flow > .collection-grid,
+.common-flow > .dual-core,
+.common-flow > .fusion-rules { grid-row: 2; align-self: start; }
 .input-grid,
 .collection-grid,
 .fusion-rules { display: grid; align-content: start; gap: 8px; margin-top: 8px; }
@@ -196,7 +200,7 @@ code { display: block; width: 100%; color: var(--text); font-family: "Pretendard
   .common-flow > .input-grid,
   .common-flow > .collection-grid,
   .common-flow > .dual-core,
-  .common-flow > .fusion-rules { grid-column: auto; }
+  .common-flow > .fusion-rules { grid-column: auto; grid-row: auto; }
   .input-grid::after,
   .collection-grid::after,
   .dual-core::after { top: auto; right: 50%; bottom: -19px; transform: translateX(50%) rotate(90deg); }
