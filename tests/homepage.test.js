@@ -39,7 +39,7 @@ const agentBlock = js.match(/const agents = \[([\s\S]*?)\n\];/)?.[1] || "";
 
 [
   "NEW SINCE 2026-07-01",
-  "DUAL-CORE OPERATING MAP",
+  "LINEAGE + OPERATIONS",
   "데이터는 어디서 들어오나",
   "Redash query 317",
   "Airbridge S3 · app / web",
@@ -109,13 +109,34 @@ assert.ok(js.includes('makeEl("small", "agent-observed", agent.observed)'), "Age
 [
   'id="developmentUpdates"',
   'id="endToEndFlow"',
-  "common-flow",
+  "lineage-flow",
   "dual-core",
   "agent-grid",
   "wiki-write-grid",
 ].forEach((needle) => {
   assert.ok(combined.includes(needle), `Missing dual-core structure: ${needle}`);
 });
+
+[
+  'href="#flow"',
+  'href="#today"',
+  'href="#agents"',
+  'href="#systems"',
+  "lineage-flow",
+  "source-lane",
+  "truth-lane",
+  "agent-rail",
+  "operations-band",
+  "today-panel",
+  "agent-register",
+  "Windows Scheduler가 실행하는 핵심 자동화를 시간순으로 보여주고, 점검이 필요한 작업을 빠르게 식별합니다.",
+  "각 봇과 에이전트가 DuckDB·Wiki를 읽고 쓰는 범위와 현재 운영 상태를 한눈에 요약합니다.",
+  "function renderOperationsBand()",
+].forEach((needle) => {
+  assert.ok(combined.includes(needle), `Missing B2 lineage structure: ${needle}`);
+});
+assert.ok(js.includes("agents.forEach((agent) =>"), "Agent register should reuse all five agent records");
+assert.ok(!combined.includes("AFTER THE FLOW"), "Generic AFTER THE FLOW content should be removed");
 
 assert.ok(!combined.includes("TELEGRAM_BOT_TOKEN="), "Secrets should not be rendered");
 assert.ok(!combined.includes("OPENAI_API_KEY="), "Secrets should not be rendered");

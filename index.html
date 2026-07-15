@@ -9,8 +9,18 @@
   <body>
     <header class="page-hero">
       <div class="hero-inner">
-        <p class="eyebrow">MRT 데이터 / 마케팅 자동화 운영 지도</p>
+        <div class="hero-top">
+          <p class="eyebrow">MRT 데이터 / 마케팅 자동화 운영 지도</p>
+          <nav class="section-nav" aria-label="주요 섹션">
+            <a href="#flow">FLOW</a>
+            <a href="#today">TODAY</a>
+            <a href="#agents">AGENTS</a>
+            <a href="#systems">SYSTEMS</a>
+          </nav>
+          <span class="hero-cutoff">2026-07-14 확인</span>
+        </div>
         <h1>SuperUltimate AI 운영본부</h1>
+        <p class="hero-statement">모든 데이터가 어디서 와서 어디로 가는가</p>
         <p class="hero-copy">
           지금까지 구축한 데이터 적재, 광고비 수집, Telegram 봇, A/B 테스트,
           LLM 분석, 운영 모니터링을 한 화면에서 볼 수 있게 정리했습니다.
@@ -20,24 +30,13 @@
     </header>
 
     <main>
-      <section class="section-block" aria-labelledby="updates-title">
+      <section id="flow" class="section-block flow-section" aria-labelledby="flow-title">
         <div class="section-heading section-heading-row">
           <div>
-            <p class="section-kicker">NEW SINCE 2026-07-01</p>
-            <h2 id="updates-title">최근 개발 업데이트</h2>
+            <p class="section-kicker">LINEAGE + OPERATIONS</p>
+            <h2 id="flow-title">소스에서 듀얼 코어를 거쳐 에이전트까지</h2>
           </div>
-          <span class="observed-badge">2026-07-14 확인</span>
-        </div>
-        <div id="developmentUpdates" class="update-grid"></div>
-      </section>
-
-      <section class="section-block flow-section" aria-labelledby="flow-title">
-        <div class="section-heading section-heading-row">
-          <div>
-            <p class="section-kicker">DUAL-CORE OPERATING MAP</p>
-            <h2 id="flow-title">데이터와 지식이 에이전트를 움직이는 전체 흐름</h2>
-          </div>
-          <span class="observed-badge">9개 현재 테이블 · 12개 임시 safe view · 2026-07-14 확인</span>
+          <span class="observed-badge">7 SOURCES · 2 TRUTH CORES · 5 AGENTS</span>
         </div>
 
         <div class="orchestration-strip" aria-label="자동화 실행 계층">
@@ -51,7 +50,18 @@
         <div id="endToEndFlow" class="dual-core-map"></div>
       </section>
 
-      <section class="section-block">
+      <section class="section-block" aria-labelledby="updates-title">
+        <div class="section-heading section-heading-row">
+          <div>
+            <p class="section-kicker">NEW SINCE 2026-07-01</p>
+            <h2 id="updates-title">최근 개발 업데이트</h2>
+          </div>
+          <span class="observed-badge">2026-07-14 확인</span>
+        </div>
+        <div id="developmentUpdates" class="update-grid"></div>
+      </section>
+
+      <section id="systems" class="section-block">
         <div class="section-heading">
           <p class="section-kicker">SYSTEM MAP</p>
           <h2>개발된 운영 시스템</h2>

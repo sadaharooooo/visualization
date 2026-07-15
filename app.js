@@ -507,11 +507,13 @@ function renderFlow() {
   target.append(renderCommonFlow());
   target.append(renderAgentFlow());
   target.append(renderWikiWrites());
+  target.append(renderOperationsBand());
 }
 
 function renderCommonFlow() {
-  const flow = makeEl("section", "common-flow");
-  flow.append(makeEl("h3", "flow-step", "Step 01 · 데이터는 어디서 들어오나"));
+  const flow = makeEl("section", "lineage-flow");
+  const sourceLane = makeEl("div", "flow-lane source-lane");
+  sourceLane.append(makeEl("h3", "flow-step", "01 · SOURCE / 데이터는 어디서 들어오나"));
   const inputs = makeEl("div", "input-grid");
   commonInputs.forEach(([name, detail, destination]) => {
     const item = makeEl("article", "input-card");
@@ -520,9 +522,9 @@ function renderCommonFlow() {
     item.append(makeEl("span", "flow-destination", destination));
     inputs.append(item);
   });
-  flow.append(inputs);
+  sourceLane.append(inputs);
 
-  flow.append(makeEl("h3", "flow-step", "Step 02 · 어떻게 모으고 기록하나"));
+  sourceLane.append(makeEl("h3", "lane-subtitle", "02 · 수집과 기록"));
   const collection = makeEl("div", "collection-grid");
   collectionSteps.forEach(([name, detail]) => {
     const item = makeEl("article", "collection-card");
@@ -530,8 +532,12 @@ function renderCommonFlow() {
     item.append(makeEl("p", "", detail));
     collection.append(item);
   });
-  flow.append(collection);
+  sourceLane.append(collection);
+  flow.append(sourceLane);
+  flow.append(makeEl("span", "flow-arrow", "→"));
 
+  const truthLane = makeEl("div", "flow-lane truth-lane");
+  truthLane.append(makeEl("h3", "flow-step", "02–04 · TRUTH CORES / 데이터와 지식의 기준"));
   const dualCore = makeEl("div", "dual-core");
   cores.forEach((core) => {
     const card = makeEl("article", "core-card");
@@ -547,9 +553,9 @@ function renderCommonFlow() {
     });
     dualCore.append(card);
   });
-  flow.append(dualCore);
+  truthLane.append(dualCore);
 
-  flow.append(makeEl("h3", "flow-step", "Step 04 · 두 코어를 결합하는 규칙"));
+  truthLane.append(makeEl("h3", "lane-subtitle", "OpenAI Responses API · 두 코어 결합 규칙"));
   const rules = makeEl("div", "fusion-rules");
   fusionRules.forEach(([question, answer]) => {
     const rule = makeEl("article", "fusion-rule");
@@ -557,13 +563,29 @@ function renderCommonFlow() {
     rule.append(makeEl("p", "", answer));
     rules.append(rule);
   });
-  flow.append(rules);
+  truthLane.append(rules);
+  flow.append(truthLane);
+  flow.append(makeEl("span", "flow-arrow", "→"));
+
+  const agentRail = makeEl("div", "flow-lane agent-rail");
+  agentRail.append(makeEl("h3", "flow-step", "05 · AGENTS / 실행 주체"));
+  agents.forEach((agent) => {
+    const item = makeEl("article", "agent-rail-card");
+    item.append(makeEl("h4", "", agent.name));
+    const uses = makeEl("div", "core-use-chips");
+    agent.uses.forEach((use) => uses.append(makeEl("span", "core-use-chip", use)));
+    item.append(uses);
+    item.append(makeStatus(agent.status, agent.tone));
+    agentRail.append(item);
+  });
+  flow.append(agentRail);
   return flow;
 }
 
 function renderAgentFlow() {
   const section = makeEl("section", "agent-flow");
-  section.append(makeEl("h3", "flow-step", "Step 05 · 에이전트 실행"));
+  section.id = "agents";
+  section.append(makeEl("h3", "flow-step", "AGENT DETAILS · 입력부터 결과까지"));
   const grid = makeEl("div", "agent-grid");
   agents.forEach((agent) => {
     const card = makeEl("article", "agent-card");
@@ -595,6 +617,45 @@ function renderWikiWrites() {
     grid.append(item);
   });
   section.append(grid);
+  return section;
+}
+
+function renderOperationsBand() {
+  const section = makeEl("section", "operations-band");
+  const today = makeEl("section", "operations-panel today-panel");
+  today.id = "today";
+  today.append(makeEl("h3", "flow-step", "TODAY"));
+  today.append(makeEl("p", "operations-copy", "Windows Scheduler가 실행하는 핵심 자동화를 시간순으로 보여주고, 점검이 필요한 작업을 빠르게 식별합니다."));
+  const todayList = makeEl("div", "today-list");
+  automations
+    .filter(({ time }) => ["06:00", "06:10", "08:30", "09:20", "10:00"].includes(time))
+    .forEach((automation) => {
+      const item = makeEl("article", "today-item");
+      item.append(makeEl("time", "", automation.time));
+      const body = makeEl("div", "today-body");
+      body.append(makeEl("strong", "", automation.job));
+      body.append(makeEl("small", "", automation.task));
+      item.append(body);
+      item.append(makeStatus(automation.status, automation.tone));
+      todayList.append(item);
+    });
+  today.append(todayList);
+
+  const register = makeEl("section", "operations-panel agent-register");
+  register.append(makeEl("h3", "flow-step", "AGENT REGISTER"));
+  register.append(makeEl("p", "operations-copy", "각 봇과 에이전트가 DuckDB·Wiki를 읽고 쓰는 범위와 현재 운영 상태를 한눈에 요약합니다."));
+  const registerList = makeEl("div", "agent-register-list");
+  agents.forEach((agent) => {
+    const item = makeEl("article", "agent-register-item");
+    const body = makeEl("div", "agent-register-body");
+    body.append(makeEl("h4", "", agent.name));
+    body.append(makeEl("p", "", agent.uses.join(" · ")));
+    item.append(body);
+    item.append(makeStatus(agent.status, agent.tone));
+    registerList.append(item);
+  });
+  register.append(registerList);
+  section.append(today, register);
   return section;
 }
 
