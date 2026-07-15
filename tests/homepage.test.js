@@ -149,14 +149,8 @@ assert.ok(
   "Hero h1 should contain and wrap within its parent"
 );
 assert.ok(
-  /@media \(max-width: 760px\)\s*\{[\s\S]*?h1\s*\{[^}]*font-size:\s*34px/.test(css),
-  "Mobile hero h1 should use a fixed 34px size"
-);
-const mobileAgentRules = css.match(/@media \(max-width: 760px\)\s*\{([\s\S]*?)\n\}/)?.[1] || "";
-assert.ok(
-  /\.agent-grid\s*\{[^}]*padding-left:\s*\d+px/.test(mobileAgentRules) &&
-    /\.agent-grid::before\s*\{[^}]*left:\s*\d+px[^}]*right:\s*auto[^}]*width:\s*1px/.test(mobileAgentRules),
-  "Mobile agent connector should use a left rail outside card content"
+  /@media \(max-width: 760px\)\s*\{[\s\S]*?h1\s*\{[^}]*font-size:\s*18px[^}]*\}[\s\S]*?\.hero-statement\s*\{[^}]*font-size:\s*30px/.test(css),
+  "Mobile hero should keep the brand compact and the lineage question prominent"
 );
 assert.ok(
   css.includes('@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");'),
@@ -171,27 +165,25 @@ fontFamilies.forEach((fontFamily) => {
 assert.ok(!css.includes("Helvetica"), "Helvetica should not remain in the font stack");
 assert.ok(!css.includes("Consolas"), "Consolas should not remain in the font stack");
 
-assert.ok(/\.common-flow\s*\{[^}]*align-items:\s*start/.test(css), "Desktop common flow should align items to the start");
-[1, 3, 6].forEach((step) => {
-  assert.ok(
-    new RegExp(`\\.common-flow > \\.flow-step:nth-child\\(${step}\\)\\s*\\{[^}]*grid-row:\\s*1`).test(css),
-    `Flow step ${step} should stay in desktop row 1`
-  );
-});
-["input-grid", "collection-grid", "dual-core", "fusion-rules"].forEach((item) => {
-  assert.ok(css.includes(`.common-flow > .${item}`), `${item} should be explicitly placed in the desktop flow`);
-});
 assert.ok(
-  /\.common-flow > \.input-grid,[\s\S]*\.common-flow > \.fusion-rules\s*\{[^}]*grid-row:\s*2[^}]*align-self:\s*start/.test(css),
-  "Desktop flow content should start in row 2"
+  /\.lineage-flow\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:/s.test(css),
+  "Desktop lineage should use an explicit grid"
+);
+assert.ok(
+  /\.operations-band\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s.test(css),
+  "TODAY and AGENT REGISTER should share a two-column operations band"
+);
+assert.ok(css.includes(":focus-visible"), "Keyboard focus should remain visible");
+assert.ok(css.includes("@media (prefers-reduced-motion: reduce)"), "Reduced-motion users should be respected");
+const lineageResponsive = css.match(/@media \(max-width: 1100px\) \{([\s\S]*?)\n\}/)?.[1] || "";
+assert.ok(
+  lineageResponsive.includes(".lineage-flow") &&
+    lineageResponsive.includes(".operations-band") &&
+    lineageResponsive.includes("grid-template-columns: 1fr"),
+  "Lineage and operations panels should stack at 1100px"
 );
 
-const tabletFlow = css.match(/@media \(max-width: 1328px\) \{([\s\S]*?)\n\}/)?.[1] || "";
-assert.ok(tabletFlow, "Common flow should stack before its 1292px minimum width overflows the page");
-["flow-step:nth-child(n)", "input-grid", "collection-grid", "dual-core", "fusion-rules"].forEach((item) => {
-  assert.ok(tabletFlow.includes(`.common-flow > .${item}`), `${item} should remain in the tablet flow reset`);
-});
-assert.ok(/\.common-flow > \.flow-step:nth-child\(n\),[\s\S]*\.common-flow > \.fusion-rules\s*\{[^}]*grid-row:\s*auto/.test(tabletFlow), "Tablet flow should reset to automatic rows");
+assert.ok(!css.includes(".common-flow"), "Superseded common-flow layout should be removed");
 
 [
   "--canvas: #0b0e11",
